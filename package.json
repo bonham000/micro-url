@@ -1,0 +1,22 @@
+{
+  "name": "url-microservice",
+  "version": "1.0.0",
+  "description": "URL Shortener for Free Code Camp",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bonham000/micro-url.git"
+  },
+  "author": "Sean Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bonham000/micro-url/issues"
+  },
+  "homepage": "https://github.com/bonham000/micro-url#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
