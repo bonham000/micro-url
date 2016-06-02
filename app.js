@@ -11,10 +11,10 @@ var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 // server url for local:
-var url = 'mongodb://localhost:27017/micro-url';
+// var url = 'mongodb://localhost:27017/micro-url';
 
 // server url for mLab:
-// var url = "mongodb://client:clienttest@ds039684.mlab.com:39684/micro-url";
+var url = "mongodb://client:clienttest@ds039684.mlab.com:39684/micro-url";
 
 var originalUrl = ''; // Intialize variable to store client URL request;
 var randomUrl = '';
