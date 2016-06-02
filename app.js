@@ -5,16 +5,12 @@ var port = process.env.PORT;
 var mongodb = require("mongodb");
 var valid = require('url-valid');
 
-var nano = require("nano")(port);
-nano.db.create("addresses");
-var addresses = nano.db.use("addresses");
-
-addresses.insert({"original url": "www.example.com", "micro url": "12345"});
-
 var MongoClient = mongodb.MongoClient;
+var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/micro-url';
 
-var reqUrl = ''; // Intialize variable to store client URL request;
+var originalUrl = ''; // Intialize variable to store client URL request;
 
 MongoClient.connect(url, function(err, db) {
     
@@ -29,6 +25,32 @@ MongoClient.connect(url, function(err, db) {
     
 })
 
+var insertDocument = function(originalUrl, db, callback) {
+    db.collection('addresses').insertOne( {
+        "original-url" : originalUrl,
+        "micro-url" : "12345"
+    }, function(err, result) {
+        assert.equal(err, null);
+        console.log("Inserted a document into the addresses collection");
+        callback();
+    });
+};
+
+var findAddress = function(micro, db, callback) {
+
+    var cursor = db.collection('addresses').find( );
+    cursor.each(function(err, micro) {
+        assert.equal(err, null);
+        if (micro != null) {
+            console.dir(micro);
+        }
+        else {
+            callback();
+        }
+    });
+    
+};
+
 app.get('/', function(req, res) {
     
     console.log(req.params);
@@ -38,13 +60,37 @@ app.get('/', function(req, res) {
 
 app.get('*', function(req, res) {
     
-    reqUrl = (req.params[0]).slice(1);
-    
-    console.log(reqUrl);
+    originalUrl = (req.params[0]).slice(1);
     
     // test reqUrl against mongoDB database, if there is a match then redirect, otherwise: else { valid() }  
+    if (originalUrl === "this") {
+        
+        var micro = "12345";
+        
+        MongoClient.connect(url, function(err, db) {
+            
+            if(!err) {
+        
+            var x = db.collection('addresses').find({},{"micro-url":micro, _id:0});
+            console.log(x);
+            db.close();
+            
+            }
+        
+        });
+        
+        // MongoClient.connect(url, function(err, db) {
+        //     assert.equal(null, err);
+        //     findAddress(micro, db, function() {
+        //         db.close();
+        //     });
+        // });
+        
+    }
+        
+    else {
 
-    valid(reqUrl, function(err, valid) {
+    valid(originalUrl, function(err, valid) {
         if (err) {
             console.log("There was an error");
         }
@@ -53,15 +99,24 @@ app.get('*', function(req, res) {
         }
         else if (valid === true) {
             console.log("Your url is valid; " + valid);
-            addresses.save( { "original url" : reqUrl, "micro url" : "12345" } );
-            console.log("inserted");
+
+            MongoClient.connect(url, function(err, db) {
+                assert.equal(null, err);
+                insertDocument(originalUrl, db, function() {
+                    db.close();
+                });
+            });
             
+           
+
             // Assign url a random 5 digit character sequence; insert this as entry in the mongoDB database;
             // Route 
         }    
     });
     
-    res.send("This is some other page, here is your input: " + reqUrl);
+    }
+    
+    res.send("This is some other page, here is your input: " + originalUrl);
     
 });
 
