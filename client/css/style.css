@@ -1,6 +1,6 @@
 html, body {
 	height: 100%;
-	min-width: 1100px;
+	min-width: 1200px;
 	min-height: 600px;
 	margin: 0;
 	padding: 0;
@@ -21,8 +21,8 @@ body {
 }
 .container {
 	border: 1px solid white;
-	min-width: 1000px;
-	max-width: 1100px;
+	min-width: 1100px;
+	max-width: 1200px;
 	height: auto;
 	font-family: 'Crimson Text', serif;
 	background: rgba(30,30,30,.75);
@@ -63,7 +63,7 @@ body {
 	margin-bottom: 5px;
 }
 .examplesBox {
-	width: 900px;
+	width: 1000px;
 	margin: 0 auto;
 }
 .examples {
