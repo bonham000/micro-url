@@ -5,6 +5,7 @@ var port = process.env.PORT;
 var mongodb = require("mongodb");
 var valid = require('url-valid');
 var micro = require('./micro.js');
+var fs = require('fs');
 
 var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
@@ -62,10 +63,18 @@ var findAddress = function(micro, db, callback) {
 
 };
 
+app.get('/client/css/style.css', function(req, res) {
+    res.sendFile(__dirname + '/client/css/style.css');
+});
+
+app.get('/client/js/index.js', function(req, res) {
+    res.sendFile(__dirname + '/client/js/index.js');
+});
+
 app.get('/', function(req, res) {
     
     console.log(req.params);
-    res.send("Hello from the server, this is home");
+    res.sendFile(__dirname + '/index.html');
     
 });
 
@@ -118,7 +127,7 @@ app.get('*', function(req, res) {
             }
             else if (valid === false) {
                 console.log("Your url was invalid.");
-                res.send("Your url was invalid");
+                res.send("Your url is invalid or formatted incorrectly.");
             }
             else if (valid === true) {
                 console.log("Your url is valid; " + valid);
@@ -132,16 +141,14 @@ app.get('*', function(req, res) {
                     });
                 });
                     
-                    res.send("Your url was valid and has been inserted into the database. Here is your short url: " + randomUrl);
+                res.send("Your url is valid! Here is your short url: " + randomUrl);
                 
-                };
-            });    
-        };
+            };
+        });    
+    };
         
-    });
+});
     
-
-
-
+    
 app.listen(port);
 console.log("Server is up...");
