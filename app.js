@@ -28,11 +28,12 @@ MongoClient.connect(url, function(err, db) {
 
 var insertDocument = function(originalUrl, db, callback) {
     
+    // Calls to exported function to generate micro-url and return a unique assignment:
     var randomUrl = micro.getMicro();
     
     db.collection('addresses').insertOne( {
         "original-url" : originalUrl,
-        "micro-url" : randomUrl // Generate and insert custom micro URL here
+        "micro-url" : randomUrl
     }, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the addresses collection");
@@ -49,24 +50,10 @@ var findAddress = function(micro, db, callback) {
         }
         
         console.log("Found this: " + JSON.stringify(doc));
-        // doc.forEach(function(data) {
-        //     console.log(JSON.stringify(doc));
-        // });
+        return (doc[0]["original-url"]);
         
     });
 
-
-    // var cursor = db.collection('addresses').find( );
-    // cursor.each(function(err, micro) {
-    //     assert.equal(err, null);
-    //     if (micro != null) {
-    //         console.dir(micro);
-    //     }
-    //     else {
-    //         callback();
-    //     }
-    // });
-    
 };
 
 app.get('/', function(req, res) {
@@ -78,54 +65,84 @@ app.get('/', function(req, res) {
 
 // Add custom paths to micro-urls here for redirects
 
+
 app.get('*', function(req, res) {
     
     originalUrl = (req.params[0]).slice(1);
     
     // test reqUrl against mongoDB database, if there is a match then redirect, otherwise: else { valid() }  
-    if (originalUrl === "this") {
-        
+      
         var micro = new Object();
-        micro["micro-url"] = "2468";
-        
+        micro["micro-url"] = originalUrl;
+            
         MongoClient.connect(url, function(err, db) {
-            assert.equal(null, err);
-            findAddress(micro, db, function() {
-                db.close();
-            });
+            
+            if (err) {
+                console.log(err);
+            }
+
+            db.collection('addresses').find(micro).toArray(function(error, doc) {
+            
+            console.log(doc)
+            console.log(typeof doc);
+            console.log(doc[0], doc[1])
+            
+            if (error) {
+                console.log(error);
+                testUrl();
+            }
+            else if (!error) {
+                
+                if (doc[0] === undefined) {
+                    testUrl();
+                    return;
+                }
+                
+                console.log("Found this: " + typeof doc + JSON.stringify(doc));
+                var redirect = doc[0]["original-url"];
+                res.send("Redirecting to: " + redirect);
+            }        
+        });
+        
+        });
+        
+            // MongoClient.connect(url, function(err, db) {
+                
+            // assert.equal(null, err);
+            
+            // findAddress(micro, db, function() {
+            //     res.redirect();
+            //     db.close();
+            
+        //     });
+        // });
+        
+    
+        
+    function testUrl() {
+    
+        valid(originalUrl, function(err, valid) {
+            if (err) {
+                console.log("There was an error");
+            }
+            else if (valid === false) {
+                console.log("Your url was invalid.");
+            }
+            else if (valid === true) {
+                console.log("Your url is valid; " + valid);
+    
+                MongoClient.connect(url, function(err, db) {
+                    assert.equal(null, err);
+                    insertDocument(originalUrl, db, function() {
+                        db.close();
+                    });
+                });
+                
+            }    
         });
         
     }
-        
-    else {
-
-    valid(originalUrl, function(err, valid) {
-        if (err) {
-            console.log("There was an error");
-        }
-        else if (valid === false) {
-            console.log("Your url was invalid.");
-        }
-        else if (valid === true) {
-            console.log("Your url is valid; " + valid);
-
-            MongoClient.connect(url, function(err, db) {
-                assert.equal(null, err);
-                insertDocument(originalUrl, db, function() {
-                    db.close();
-                });
-            });
-            
-           
-
-            // Assign url a random 5 digit character sequence; insert this as entry in the mongoDB database;
-            // Route 
-        }    
-    });
     
-    }
-    
-    res.send("This is some other page, here is your input: " + originalUrl);
     
 });
 
