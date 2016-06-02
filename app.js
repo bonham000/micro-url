@@ -12,6 +12,12 @@ var ObjectId = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/micro-url';
 
 var originalUrl = ''; // Intialize variable to store client URL request;
+var randomUrl = '';
+
+function getRandom() {
+    randomUrl = micro.getMicro();
+    return randomUrl;
+}
 
 MongoClient.connect(url, function(err, db) {
     
@@ -29,7 +35,7 @@ MongoClient.connect(url, function(err, db) {
 var insertDocument = function(originalUrl, db, callback) {
     
     // Calls to exported function to generate micro-url and return a unique assignment:
-    var randomUrl = micro.getMicro();
+    // randomUrl = micro.getMicro();
     
     db.collection('addresses').insertOne( {
         "original-url" : originalUrl,
@@ -83,10 +89,6 @@ app.get('*', function(req, res) {
 
             db.collection('addresses').find(micro).toArray(function(error, doc) {
             
-            console.log(doc)
-            console.log(typeof doc);
-            console.log(doc[0], doc[1])
-            
             if (error) {
                 console.log(error);
                 testUrl();
@@ -105,46 +107,40 @@ app.get('*', function(req, res) {
         });
         
         });
-        
-            // MongoClient.connect(url, function(err, db) {
-                
-            // assert.equal(null, err);
-            
-            // findAddress(micro, db, function() {
-            //     res.redirect();
-            //     db.close();
-            
-        //     });
-        // });
-        
-    
+
         
     function testUrl() {
     
         valid(originalUrl, function(err, valid) {
             if (err) {
                 console.log("There was an error");
+                res.send("An error occurred");
             }
             else if (valid === false) {
                 console.log("Your url was invalid.");
+                res.send("Your url was invalid");
             }
             else if (valid === true) {
                 console.log("Your url is valid; " + valid);
-    
+                
+                getRandom();
+                
                 MongoClient.connect(url, function(err, db) {
                     assert.equal(null, err);
                     insertDocument(originalUrl, db, function() {
                         db.close();
                     });
                 });
+                    
+                    res.send("Your url was valid and has been inserted into the database. Here is your short url: " + randomUrl);
                 
-            }    
-        });
+                };
+            });    
+        };
         
-    }
+    });
     
-    
-});
+
 
 
 app.listen(port);
