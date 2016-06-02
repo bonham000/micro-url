@@ -115,7 +115,10 @@ app.get('*', function(req, res) {
                 
                 console.log("Found this: " + typeof doc + JSON.stringify(doc));
                 var redirect = doc[0]["original-url"];
-                res.send("Redirecting to: " + redirect);
+                //res.send("Redirecting to: " + redirect);
+                
+                res.redirect(redirect);
+                
             }        
         });
         
