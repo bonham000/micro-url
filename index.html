@@ -1,28 +1,54 @@
 <!DOCTYPE html>
+
 <html >
   <head>
     <meta charset="UTF-8">
     <title>URL Shortener Microservice</title>
     
-    
-    
-    
-        <link rel="stylesheet" href="css/style.css">
+        <link href='https://fonts.googleapis.com/css?family=Glegoo' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Scada' rel='stylesheet' type='text/css'>
 
-    
-    
-    
+        <link rel="stylesheet" href="client/css/style.css">
+
   </head>
 
   <body>
 
-    <div>Hello</div>
+    <div class="container">
+
+      <div class="titleBox">
+        <h1 class="title">Micro-URL Generator</h1>
+      </div>
+
+      <div class="subtitleBoxOne">
+        <p class="subtitle">How this API works:</p>
+      </div>
+
+      <div class="instructionsBox">
+        <p class="instructions padded">1) Passing a valid URL as a parameter will return a message with your shortened URL.</p>
+        <p class="instructions padded">2) Visiting the shortened URL will redirect you to your original page.</p><p class="instructions">3) Passing an invalid URL will return invalid.</p>
+      </div>
+
+      <div class="subtitleBoxTwo">
+        <p class="examplesHeader subtitle"><a id="showExamples" href="#!">See an Example</a></p>
+      </div>
+
+      <div class="examplesBox">
+
+        <ul class="examples">
+          <li>Generate a valid URL like this: <code>https:heroku-app.com/https://www.google.com</code></li>
+          <li>Sample response: <code>Here is your micro-url: 47921</code></li>
+          <li><code>https://heroku-app.com/47921</code> now redirects to <code>https://www.google.com</code></li>
+        </ul>
+
+      </div>
+
+    </div>
+
     <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
 
-        <script src="js/index.js"></script>
-
-    
-    
+        <script src="client/js/index.js"></script>
     
   </body>
+
 </html>

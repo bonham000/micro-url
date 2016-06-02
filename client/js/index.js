@@ -1,1 +1,6 @@
-var x = 5;
+
+$("#showExamples").click(function() {
+
+	$(".examples").slideToggle();
+
+});
