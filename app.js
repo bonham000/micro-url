@@ -14,7 +14,9 @@ var ObjectId = require('mongodb').ObjectID;
 // var url = 'mongodb://localhost:27017/micro-url';
 
 // server url for mLab:
-var url = 'mongodb://bonham000:mlabpassword10@ds01316.mlab.com:1316/micro-url';
+var url = 'mongodb://client:clienttest@ds01316.mlab.com:/39684/micro-url';
+
+
 
 var originalUrl = ''; // Intialize variable to store client URL request;
 var randomUrl = '';
