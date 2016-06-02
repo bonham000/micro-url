@@ -11,10 +11,10 @@ var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 // server url for local:
-// var url = 'mongodb://localhost:27017/micro-url';
+var url = 'mongodb://localhost:27017/micro-url';
 
 // server url for mLab:
-var url = "mongodb://client:clienttest@ds039684.mlab.com:39684/micro-url";
+// var url = "mongodb://client:clienttest@ds039684.mlab.com:39684/micro-url";
 
 var originalUrl = ''; // Intialize variable to store client URL request;
 var randomUrl = '';
@@ -82,8 +82,7 @@ app.get('/', function(req, res) {
     
 });
 
-// Add custom paths to micro-urls here for redirects
-
+app.get('/favicon.ico', function(req, res) { res.sendStatus(200); });
 
 app.get('*', function(req, res) {
     
@@ -115,10 +114,10 @@ app.get('*', function(req, res) {
                 
                 console.log("Found this: " + typeof doc + JSON.stringify(doc));
                 var redirect = doc[0]["original-url"];
-                //res.send("Redirecting to: " + redirect);
+                console.log("Redirecting...");
                 
                 res.redirect(redirect);
-                
+        
             }        
         });
         
