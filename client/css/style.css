@@ -24,9 +24,10 @@ body {
 	min-width: 1000px;
 	max-width: 1100px;
 	height: auto;
-font-family: 'Crimson Text', serif;
+	font-family: 'Crimson Text', serif;
 	background: rgba(30,30,30,.75);
 	padding-bottom: 20px;
+	margin-top: -150px;
 }
 
 .title {
