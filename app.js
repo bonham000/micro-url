@@ -4,6 +4,7 @@ var path = require('path');
 var port = process.env.PORT;
 var mongodb = require("mongodb");
 var valid = require('url-valid');
+var micro = require('./micro.js');
 
 var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
@@ -26,9 +27,12 @@ MongoClient.connect(url, function(err, db) {
 })
 
 var insertDocument = function(originalUrl, db, callback) {
+    
+    var randomUrl = micro.getMicro();
+    
     db.collection('addresses').insertOne( {
         "original-url" : originalUrl,
-        "micro-url" : "12345"
+        "micro-url" : randomUrl // Generate and insert custom micro URL here
     }, function(err, result) {
         assert.equal(err, null);
         console.log("Inserted a document into the addresses collection");
@@ -38,16 +42,30 @@ var insertDocument = function(originalUrl, db, callback) {
 
 var findAddress = function(micro, db, callback) {
 
-    var cursor = db.collection('addresses').find( );
-    cursor.each(function(err, micro) {
-        assert.equal(err, null);
-        if (micro != null) {
-            console.dir(micro);
+    db.collection('addresses').find(micro).toArray(function(error, doc) {
+        
+        if (error) {
+            console.log(error);
         }
-        else {
-            callback();
-        }
+        
+        console.log("Found this: " + JSON.stringify(doc));
+        // doc.forEach(function(data) {
+        //     console.log(JSON.stringify(doc));
+        // });
+        
     });
+
+
+    // var cursor = db.collection('addresses').find( );
+    // cursor.each(function(err, micro) {
+    //     assert.equal(err, null);
+    //     if (micro != null) {
+    //         console.dir(micro);
+    //     }
+    //     else {
+    //         callback();
+    //     }
+    // });
     
 };
 
@@ -58,6 +76,8 @@ app.get('/', function(req, res) {
     
 });
 
+// Add custom paths to micro-urls here for redirects
+
 app.get('*', function(req, res) {
     
     originalUrl = (req.params[0]).slice(1);
@@ -65,26 +85,15 @@ app.get('*', function(req, res) {
     // test reqUrl against mongoDB database, if there is a match then redirect, otherwise: else { valid() }  
     if (originalUrl === "this") {
         
-        var micro = "12345";
+        var micro = new Object();
+        micro["micro-url"] = "2468";
         
         MongoClient.connect(url, function(err, db) {
-            
-            if(!err) {
-        
-            var x = db.collection('addresses').find({},{"micro-url":micro, _id:0});
-            console.log(x);
-            db.close();
-            
-            }
-        
+            assert.equal(null, err);
+            findAddress(micro, db, function() {
+                db.close();
+            });
         });
-        
-        // MongoClient.connect(url, function(err, db) {
-        //     assert.equal(null, err);
-        //     findAddress(micro, db, function() {
-        //         db.close();
-        //     });
-        // });
         
     }
         
