@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/bonham000/micro-url#readme",
   "dependencies": {
-    "express": "^4.13.4"
+    "express": "^4.13.4",
+    "mongodb": "^2.1.21",
+    "nano": "^6.2.0",
+    "url-valid": "^0.3.0"
   }
 }
